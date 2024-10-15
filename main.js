@@ -106,6 +106,32 @@ function space(number){
     }
 } // might be helpful in the future.
 
+function generate_huge_file(){
+        fs.readFile('data/rap.txt', 'utf8', (err, data) => {
+            const converted = JSON.parse(data);
+            for (let i = 0; i < converted.length; i++){
+                if(converted[i].category == "Pet" && converted[i].configData.id.includes("Huge")){
+                    console.log(`${converted[i].configData.id}\n`);
+                    try {
+                        fs.writeFileSync('data/huges.txt', `{"${converted[i].configData.id}":${converted[i].value}},`); // issue, this overwrites other info therefore, nothing new is generated. Maybe write with append mode on?
+                      } catch (err) {
+                        console.error('error:', err);
+                      }
+                }
+            }
+        })
+        //const converted = JSON.parse(data);
+        //console.log(converted);
+        //for (let i = 0; i < data.length; i++){
+        //    if(converted[i].category == "Pet" && converted[i].configData.id.includes("Huge")){
+        //        console.log(`${converted[i].configData.id}`);
+        //    }
+        //}
+        //console.log("Huge Pets written to huge.txt");
+    }
+
+
+
 console.log("loaded.")
 const rl = readline.createInterface({
   input: process.stdin,
@@ -142,6 +168,7 @@ rl.question("\n --> ", (answer) => {
         break;
       case '2':
         console.log("Lowest Huge");
+        generate_huge_file();
         rl.close();
         break;
       case '3':
