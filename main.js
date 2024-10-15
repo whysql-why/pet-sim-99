@@ -100,8 +100,8 @@ function startup() {
 //console.log(clan_info);
 
 startup()
-function space(){
-    for(let i = 0; i < 5; i++){
+function space(number){
+    for(let i = 0; i < number; i++){
         console.log(" ");
     }
 } // might be helpful in the future.
@@ -126,8 +126,8 @@ function clansearch(clanname){
 }
 
 sleep(1000);
-space();
-space();
+space(5);
+space(5);
 console.log(" Pet Sim 99 ");
 console.log(" ");
 console.log(" 1. Check RAP");
@@ -158,10 +158,46 @@ rl.question("\n --> ", (answer) => {
               return error(err);
             }
             converted = JSON.parse(data); // forgot to parse json.
-            console.log("==================");
+            console.log("============================");
             console.log("   " + clanAnswer + "   ");
-            desc = converted.Desc;
-            console.log(`" ${desc}"`);
+            const desc = converted.Desc;
+            const created = new Date(converted.Created * 1000);
+            console.log(`" ${desc} "`);
+            space(1)
+            console.log(`Created: ${created}"`);
+            let members = 0;
+            console.log("\nClan member IDS:\n")
+            for (let i = 0; i < converted.Members.length; i++){
+                if(converted.Members[i].PermissionLevel == 50){
+                    console.log("- [MEMBER] " + converted.Members[i].UserID);
+                }
+                if(converted.Members[i].PermissionLevel == 90){
+                    console.log("- [OFFICER] " + converted.Members[i].UserID);
+                }else{
+                    members = members + 1;
+                }
+            }
+            console.log("Members: " + members);
+            const diamonds = converted.DepositedDiamonds
+            const status = [converted.Status, converted.StatusUsername, converted.StatusTimestamp]
+            console.log("Deposited Diamonds: " + diamonds);
+            const time = new Date(status[2] * 1000);
+            const country = converted.CountryCode
+            console.log("Country: " + country);
+            console.log(`"${status[0]} " ~ ${status[1]} | [${time}]`);
+            // BELOW IS NOT recommended. 
+            //axios.get('https://users.roblox.com/v1/users/' + status[1])
+            //.then(response => {
+            //    const username = response.name;
+            //   try {
+            //        fs.writeFileSync('data/usernames' + '.txt', JSON.stringify(data));
+            //        //console.log(data + " data stored. To file.");
+            //        console.log(`"${status[0]} " - ${username} [${time}]`);
+            //      } catch (err) {
+            //        console.error('error:', err);
+            //      }
+            //}) 
+            // https://users.roblox.com/v1/users/ for Id to username.
           rl.close();
         })});
         break;
