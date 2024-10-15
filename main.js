@@ -145,7 +145,22 @@ rl.question("\n --> ", (answer) => {
         rl.close();
         break;
       case '3':
-        console.log("Lowest Existing PET");
+        console.log("Obtaining current list of Lowest Existing Pet!!!");
+        console.log("\n================================================\n");
+        fs.readFile('data/exists.txt', 'utf8', (err, data) => {
+            const converted = JSON.parse(data);
+            converted.sort((a, b) => a.value - b.value); //convertionnnnnnnnnnnnnnnnnnnn
+            const lowexist = converted.slice(0, 10).map(item => ({
+                id: item.configData.id,
+                value: item.value})); //skided from another project ez !!
+           // console.log('lowest existing pets:', lowexist);
+            let value = 0;
+            for (let i = 0; i < lowexist.length; i++){
+                value = value + 1;
+                console.log(value, lowexist[i].id, " [", lowexist[i].value, "]");
+            }
+            console.log("\n================================================\n");
+        });
         rl.close();
         break;
       case '4':
