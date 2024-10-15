@@ -117,7 +117,7 @@ function clansearch(clanname){
     .then(response => {
         const data = response.data.data;
         try {
-            fs.writeFileSync('data/' + clanname + '.txt', JSON.stringify(data));
+            fs.writeFileSync('data/clans/' + clanname + '.txt', JSON.stringify(data));
             console.log(clanname + " was found!");
           } catch (err) {
             console.error('error:', err);
@@ -150,10 +150,20 @@ rl.question("\n --> ", (answer) => {
         break;
       case '4':
         rl.question("\n Search Clan: ", (clanAnswer) => {
-          console.log(`searching for ${clanAnswer}...`);
+          console.log(` Searching for ${clanAnswer}...`);
           clansearch(clanAnswer); //make that API call.
+          fs.readFile('data/clans/' + clanAnswer + '.txt', 'utf8', (err, data) => { // find the data.
+            if (err) {
+              console.error(err); // error reading file ?
+              return error(err);
+            }
+            converted = JSON.parse(data); // forgot to parse json.
+            console.log("==================");
+            console.log("   " + clanAnswer + "   ");
+            desc = converted.Desc;
+            console.log(`" ${desc}"`);
           rl.close();
-        });
+        })});
         break;
       default:
         console.log("bro, that is not an option :(");
