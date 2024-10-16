@@ -283,9 +283,35 @@ rl.question("\n --> ", (answer) => {
         }
         console.log("Lowest Huge");
         generate_huge_file();
+        sleep(100);
         console.log("========================");
         console.log(" Sorting huges by value!");
         console.log("========================");
+        sleep(5000);
+        fs.readFile('data/huges.txt', 'utf8', (err, data) => {
+          if (err) throw err;
+      
+          const lines = data.split('\n');
+          const entries = [];
+      
+          lines.forEach(line => {
+              const parts = line.split(':');
+              if (parts.length === 2) {
+                  const id = parts[0].trim();
+                  const value = parseInt(parts[1].trim().replace(/,/g, ''), 10);
+                  entries.push({ id, value });
+              }
+          });
+      
+          entries.sort((a, b) => a.value - b.value);
+      
+          const top10 = entries.slice(0, 10);
+      
+          top10.forEach(item => {
+              console.log(`${item.id}, Worth: ${item.value.toLocaleString()}`);
+          });
+        });      
+          
         //console.log(" ================== ");
         //console.log(cheapest_huge);
         //console.log(" ================== ");
