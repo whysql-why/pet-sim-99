@@ -21,7 +21,7 @@ const sleep = require('system-sleep');
 
 // https://ps99.biggamesapi.io/image/<robloxID> this proxes the request to get the image. 
 // Might need for a proper NodeJS app.
-// Right now all is CLI. 
+// Right now all is CLI.
 
 function startup() {
     console.log("Starting up, application.");
@@ -106,20 +106,99 @@ function space(number){
     }
 } // might be helpful in the future.
 
+
+// https://users.roblox.com//docs/index.html
+// ^^ might also be helpful idk maybe....
+
+function check(pet){
+  if(pet == 1){
+    return "Golden"
+  }
+  if(pet == 2){
+    return "Rainbow"
+  } // lmao ? thats it. 
+}
+
+function formatvalue(number) {
+  return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+function pet_colors(number){
+  if(number == 1){
+    return "Blue";
+  }
+  if(number == 2){
+    return "Purple";
+  }
+  if (number == 3){
+    return "Red";
+  }
+  if(number == 4){
+    return "Orange";
+  }
+  if(number == 5){
+    return "Yellow";
+  }
+  if(number == 6){
+    return "Green";
+  }
+}
+
+function isHugeBanned(huge) {
+  let banned = false; 
+
+  const banned_huges = ["Rabbit", "Huge Anime Unicorn", "Huge Dog", "Huge Pirate Parrot", "Huge Gamer Shiba"]; // troll huges are banned.
+
+  for (let i = 0; i < banned_huges.length; i++) {
+      if (huge == banned_huges[i]) {
+          banned = true;
+          break;
+      }
+  }
+  return banned;
+}
+
+
 function generate_huge_file(){
         fs.readFile('data/rap.txt', 'utf8', (err, data) => {
             const converted = JSON.parse(data);
             for (let i = 0; i < converted.length; i++){
-                if(converted[i].category == "Pet" && converted[i].configData.id.includes("Huge")){
-                    console.log(`${converted[i].configData.id}\n`);
-                    try {
-                        fs.writeFileSync('data/huges.txt', `{"${converted[i].configData.id}":${converted[i].value}},`); // issue, this overwrites other info therefore, nothing new is generated. Maybe write with append mode on?
-                      } catch (err) {
-                        console.error('error:', err);
-                      }
+              if(converted[i].category == "Pet" && converted[i].configData.id.includes("Huge")){
+                // now the pet is a huge.
+                converted.sort((a, b) => a.value - b.value); //convertionnnnnnnnnnnnnnnnnnnn
+                const lowrap = converted.slice(0, 50).map(item => ({
+                    id: item.configData.id,
+                    value: item.value}));
+                const value = formatvalue(converted[i].value);
+                const pet = converted[i]
+                const pet_color = pet_colors(pet.configData.cv);
+                const variant = check(pet.configData.pt);
+                if(pet.configData.cv == undefined && !isHugeBanned(pet.configData.id)){ // no color.\
+                  if(pet.configData.pt == undefined){
+                    console.log(pet.configData.id, "| ", value);
+                  }else{
+                    console.log(variant, pet.configData.id, "| ", value);
+                  }
+                } else {
+                  if(pet.configData.pt == undefined && !isHugeBanned(pet.configData.id)){
+                    console.log(pet.configData.id, "| Color:", pet_color, "| ", value);
+                  } else {
+                    if(!isHugeBanned(pet.configData.id)){
+                      console.log(pet.configData.id, "| Color: ", pet_color, "| ", variant, "| ", value);
+                    } else {
+                      console.log(" "); // banned ones.
+                    }
+                  }
                 }
-            }
-        })
+                //for (let j = 0; j < banned_huges.length; j++){
+                //  if(pet != banned_huges[j]){
+                //    console.log(`${pet}`)
+                //    j = 
+                //  }
+                }
+              }
+            })
+        }
         //const converted = JSON.parse(data);
         //console.log(converted);
         //for (let i = 0; i < data.length; i++){
@@ -128,7 +207,6 @@ function generate_huge_file(){
         //    }
         //}
         //console.log("Huge Pets written to huge.txt");
-    }
 
 
 
