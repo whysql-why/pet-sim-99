@@ -159,46 +159,74 @@ function isHugeBanned(huge) {
 }
 
 
-function generate_huge_file(){
-        fs.readFile('data/rap.txt', 'utf8', (err, data) => {
-            const converted = JSON.parse(data);
-            for (let i = 0; i < converted.length; i++){
-              if(converted[i].category == "Pet" && converted[i].configData.id.includes("Huge")){
-                // now the pet is a huge.
-                converted.sort((a, b) => a.value - b.value); //convertionnnnnnnnnnnnnnnnnnnn
-                const lowrap = converted.slice(0, 50).map(item => ({
-                    id: item.configData.id,
-                    value: item.value}));
-                const value = formatvalue(converted[i].value);
-                const pet = converted[i]
+function generate_huge_file() {
+    fs.readFile('data/rap.txt', 'utf8', (err, data) => {
+        if (err) throw err;
+
+        const converted = JSON.parse(data);
+        for (let i = 0; i < converted.length; i++) {
+            if (converted[i].category == "Pet" && converted[i].configData.id.includes("Huge")) {
+                // now the pet is a huge
+                const value2 = formatvalue(converted[i].value);
+                const pet = converted[i];
                 const pet_color = pet_colors(pet.configData.cv);
                 const variant = check(pet.configData.pt);
-                if(pet.configData.cv == undefined && !isHugeBanned(pet.configData.id)){ // no color.\
-                  if(pet.configData.pt == undefined){
-                    console.log(pet.configData.id, "| ", value);
-                  }else{
-                    console.log(variant, pet.configData.id, "| ", value);
-                  }
-                } else {
-                  if(pet.configData.pt == undefined && !isHugeBanned(pet.configData.id)){
-                    console.log(pet.configData.id, "| Color:", pet_color, "| ", value);
-                  } else {
-                    if(!isHugeBanned(pet.configData.id)){
-                      console.log(pet.configData.id, "| Color: ", pet_color, "| ", variant, "| ", value);
-                    } else {
-                      console.log(" "); // banned ones.
-                    }
-                  }
+                      //console.log(lowrap[i].id, " [", lowrap[i].value, "]");
+                      if (pet.configData.cv === undefined && !isHugeBanned(pet.configData.id)) { // no color
+                        if (pet.configData.pt === undefined) {
+                          console.log(pet.configData.id, "| ", value2);
+                          try {
+                            fs.appendFile('data/huges.txt', converted[i].configData.id + ":" + converted[i].value + "\n", (err) => {
+                                if (err) throw err;
+                                return null;
+                            });
+                          } catch (err) {
+                            console.error('error:', err);
+                          }
+                        } else {
+                          console.log(variant, pet.configData.id, "| ", value2);
+                          try {
+                            fs.appendFile('data/huges.txt', variant + " " + converted[i].configData.id + ":" + converted[i].value + "\n", (err) => {
+                                if (err) throw err;
+                                return null;
+                            });
+                          } catch (err) {
+                            console.error('error:', err);
+                          }
+                        }
+                      } else {
+                        if (pet.configData.pt === undefined && !isHugeBanned(pet.configData.id)) {
+                          console.log(pet.configData.id, "| Color:", pet_color, "| ", value2);
+                          try {
+                            fs.appendFile('data/huges.txt', pet_color + " " + converted[i].configData.id + ":" + converted[i].value + "\n", (err) => {
+                                if (err) throw err;
+                                return null;
+                            });
+                          } catch (err) {
+                            console.error('error:', err);
+                          }
+                        } else {
+                          if (!isHugeBanned(pet.configData.id)) {
+                            console.log(pet.configData.id, "| Color:", pet_color, "|", variant, "|", value2);
+                            try {
+                              fs.appendFile('data/huges.txt', variant + " " + pet_color + " "+ converted[i].configData.id + ":" + converted[i].value + "\n", (err) => {
+                                  if (err) throw err;
+                                  return null;
+                              });
+                            } catch (err) {
+                              console.error('error:', err);
+                            }                          
+                          } else {
+                              console.log(" "); // banned ones
+                          }
+                        }
+                      
                 }
-                //for (let j = 0; j < banned_huges.length; j++){
-                //  if(pet != banned_huges[j]){
-                //    console.log(`${pet}`)
-                //    j = 
-                //  }
-                }
-              }
-            })
+          }
         }
+    });
+  }
+
         //const converted = JSON.parse(data);
         //console.log(converted);
         //for (let i = 0; i < data.length; i++){
@@ -245,8 +273,22 @@ rl.question("\n --> ", (answer) => {
         rl.close();
         break;
       case '2':
+        try {
+          fs.writeFileSync('data/huges.txt', "\n", (err) => {
+              if (err) throw err;
+              return null;
+          });
+        } catch (err) {
+          console.error('error:', err);
+        }
         console.log("Lowest Huge");
         generate_huge_file();
+        console.log("========================");
+        console.log(" Sorting huges by value!");
+        console.log("========================");
+        //console.log(" ================== ");
+        //console.log(cheapest_huge);
+        //console.log(" ================== ");
         rl.close();
         break;
       case '3':
