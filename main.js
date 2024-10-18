@@ -11,7 +11,7 @@ const sleep = require('system-sleep');
 
 // as of 2024-10-15. The production URL is https://ps99.biggamesapi.io/.
 
-// I HATE ASYNC callbacks. plz no
+// I HATE ASYNC callbacks. I STILL DO.
 
 
 
@@ -270,7 +270,10 @@ rl.question("\n --> ", (answer) => {
     switch(answer) {
       case '1':
         console.log("RAP");
-        rl.close();
+        rl.question("\n Pet Name: ", (pet) => {
+          console.log(pet) // will be added soon.
+          rl.close();
+        });
         break;
       case '2':
         try {
