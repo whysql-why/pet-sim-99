@@ -272,6 +272,7 @@ rl.question("\n --> ", (answer) => {
         console.log("RAP");
         rl.question("\n Pet Name: ", (pet) => {
           console.log(pet) // will be added soon.
+          console.log("This feature will be added in the future.");
           rl.close();
         });
         break;
